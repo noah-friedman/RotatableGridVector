@@ -49,7 +49,7 @@ jobs:
           ctest
       - name: Test installation
         run: |
-          mdkir ../test
+          mkdir ../test
           cd ../test
           cat >> test.cpp << EOF
           #include <vector>
