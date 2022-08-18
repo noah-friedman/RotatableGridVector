@@ -38,36 +38,16 @@ jobs:
             ./build/
             ./.cache/
           key: cmake-${{ steps.version.outputs.VERSION }}
-      - name: Build tests
-        run: |
-          cmake -S . -B build
-          cd build
-          make
-      - name: Run tests
-        run: |
-          cd build
-          ctest
-  install:
-    name: Test installation
-    runs-on: macos-latest
-    needs: test
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Retrieve CMake build cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ./build/
-            ./.cache/
-          key: cmake-
-          restore-keys: cmake-
-      - name: Build and install
+      - name: Build GoogleTest suite and install header
         run: |
           cmake -S . -B build
           cd build
           sudo make install
-      - name: Compile test program
+      - name: Run GoogleTest suite
+        run: |
+          cd build
+          ctest
+      - name: Test installation
         run: |
           mdkir ../test
           cd ../test
