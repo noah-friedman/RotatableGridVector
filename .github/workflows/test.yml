@@ -1,0 +1,82 @@
+name: Test
+on:
+  push:
+    paths:
+      - "**.cpp"
+      - "**.hpp"
+      - .github/workflows/test.yml
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Get current GoogleTest version from Homebrew API
+        id: version
+        run: echo "::set-output name=VERSION::$(curl -s https://formulae.brew.sh/api/formula/googletest.json | jq -r .versions.stable)"
+      - name: Retrieve GoogleTest cache
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/local/Cellar/googletest/
+            /usr/local/lib/cmake/GTest/
+            /usr/local/include/google*
+            /usr/local/include/gtest
+            /usr/local/lib/libgtest*
+            /usr/local/lib/libgmock*
+          key: gtest-${{ steps.version.output.VERSION }}
+      - name: Install GoogleTest
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: brew install googletest
+      - name: Retrieve CMake build cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./build/
+            ./.cache/
+          key: cmake-${{ steps.version.output.VERSION }}
+      - name: Build tests
+        run: |
+          cmake -S . -B build
+          cd build
+          make
+      - name: Run tests
+        run: |
+          cd build
+          ctest
+  install:
+    name: Test installation
+    runs-on: macos-latest
+    needs: test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Retrieve CMake build cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./build/
+            ./.cache/
+          restore-keys: cmake-
+      - name: Build and install
+        run: |
+          cmake -S . -B build
+          cd build
+          sudo make install
+      - name: Compile test program
+        run: |
+          mdkir ../test
+          cd ../test
+          cat >> test.cpp << EOF
+          #include <vector>
+          #include <RotatableGridVector.hpp>
+          
+          int main() {
+            std::vector<std::vector<unsigned char>> v { { 'A' } };
+            RotatableGridVector c(std::move(v));
+          }
+          EOF
+          c++ -std=c++20 test.cpp
