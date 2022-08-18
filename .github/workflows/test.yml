@@ -4,6 +4,7 @@ on:
     paths:
       - "**.cpp"
       - "**.hpp"
+      - CMakeLists.txt
       - .github/workflows/test.yml
 
 jobs:

@@ -3,7 +3,7 @@ project(RotatableGridVector)
 
 set(CMAKE_CXX_STANDARD 20)
 
-install(FILES RotatableGridVector.hpp DESTINATION RotatableGridVector)
+install(FILES RotatableGridVector.hpp DESTINATION include)
 
 find_package(GTest REQUIRED)
 include(GoogleTest)
