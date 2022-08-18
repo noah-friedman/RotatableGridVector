@@ -27,7 +27,7 @@ jobs:
             /usr/local/include/gtest
             /usr/local/lib/libgtest*
             /usr/local/lib/libgmock*
-          key: gtest-${{ steps.version.output.VERSION }}
+          key: gtest-${{ steps.version.outputs.VERSION }}
       - name: Install GoogleTest
         if: steps.cache.outputs.cache-hit != 'true'
         run: brew install googletest
@@ -37,7 +37,7 @@ jobs:
           path: |
             ./build/
             ./.cache/
-          key: cmake-${{ steps.version.output.VERSION }}
+          key: cmake-${{ steps.version.outputs.VERSION }}
       - name: Build tests
         run: |
           cmake -S . -B build
@@ -60,6 +60,7 @@ jobs:
           path: |
             ./build/
             ./.cache/
+          key: cmake-
           restore-keys: cmake-
       - name: Build and install
         run: |
