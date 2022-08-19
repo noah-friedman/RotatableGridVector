@@ -20,7 +20,7 @@ RotatableGridVector<unsigned char> genActual(size_t rows, size_t cols) {
     return r;
 }
 
-RotatableGridVector<unsigned char> genExpected(size_t rows, size_t cols) {
+RotatableGridVector<unsigned char> genExpected(size_t cols, size_t rows) {
     GEN;
 
     unsigned char c = 'A';
