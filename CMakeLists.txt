@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 install(FILES RotatableGridVector.hpp DESTINATION include)
 
+include(FetchContent)
 FetchContent_Declare(
 		googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
