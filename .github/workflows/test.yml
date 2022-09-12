@@ -14,24 +14,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Get current GoogleTest version from Homebrew API
+      - name: Get current GoogleTest version from CMakeLists.txt
         id: version
-        run: echo "::set-output name=VERSION::$(curl -s https://formulae.brew.sh/api/formula/googletest.json | jq -r .versions.stable)"
-      - name: Retrieve GoogleTest cache
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            /usr/local/Cellar/googletest/
-            /usr/local/lib/cmake/GTest/
-            /usr/local/include/google*
-            /usr/local/include/gtest
-            /usr/local/lib/libgtest*
-            /usr/local/lib/libgmock*
-          key: gtest-${{ steps.version.outputs.VERSION }}
-      - name: Install GoogleTest
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: brew install googletest
+        run: echo "::set-output name=VERSION::$(grep -A 1 'googletest.git' CMakeLists.txt | grep 'GIT_TAG' | sed 's/^[[:space:]]*GIT_TAG \(.*\)$/\1/g')"
       - name: Retrieve CMake build cache
         uses: actions/cache@v3
         with:
